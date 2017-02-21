@@ -1,21 +1,22 @@
 #include <pic32mx.h>
 
-int moves_count;    // Keeps track of the number of moves
-char moves_r1;      // Markers on row 1
-char moves_r2;      // Markers on row 2
-char moves_r3;      // Markers on row 3
+/* Using char instead of int since no 
+ * number will be more than 255 anyway */
 
-int ai;             // The difficulty of the ai from 1-3 (0 if 2 players)
-int player1_turn;   // If it's player 1 that's up to do next move
+char moves_count;   // Keeps track of the number of moves
+char moves[3];      // Markers on row 1
 
-int result;         // 0 if draw, other wise 1 or 2 depnding on winner
+char ai;            // The difficulty of the ai from 1-3 (0 if 2 players)
+char player1_turn;  // If it's player 1 that's up to do next move
+
+char result;        // 0 if draw, other wise 1 or 2 depnding on winner
 
 /* Resets the functions for a new game */
-int reset(void) {
+void reset(void) {
     moves_count = 0;
-    moves_r1 = 0;
-    moves_r2 = 0;
-    moves_r3 = 0;
+    moves[0] = 0;
+    moves[1] = 0;
+    moves[2] = 0;
 
     ai = 0;
 
@@ -26,8 +27,9 @@ int reset(void) {
 
 int main() {
 
-    /* Pseudo-function flow */
+    /* Half pseudo-function flow below */
 
+    /* Loop forever to keep the game going */
     while (1) {
         reset();
 
