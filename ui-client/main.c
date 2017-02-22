@@ -5,6 +5,9 @@
 
 #define FINAL_SCORE 3
 
+void reset_game();
+void reset_round();
+
 char moves_count;   // Keeps track of the number of moves
 char moves[3];      // Markers on row 1
 
