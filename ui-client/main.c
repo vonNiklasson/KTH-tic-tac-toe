@@ -1,4 +1,5 @@
 #include <pic32mx.h>
+#include "../shared/board.c"
 
 /* Using char instead of int since no 
  * number will be higher than 255 anyway */
