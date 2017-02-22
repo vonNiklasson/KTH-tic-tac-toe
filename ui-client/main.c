@@ -3,6 +3,8 @@
 /* Using char instead of int since no 
  * number will be higher than 255 anyway */
 
+#define FINAL_SCORE 3
+
 char moves_count;   // Keeps track of the number of moves
 char moves[3];      // Markers on row 1
 
@@ -48,7 +50,7 @@ int main() {
             /* Stalling: Determine AI level (easy, medium or hard). Sets ai to 1-3 */
         }
 
-        while (player_1_score != 4 && player_2_score != 4) {
+        while (player_1_score != FINAL_SCORE && player_2_score != FINAL_SCORE) {
             reset_round();
 
             while (moves_count < 9 && result_round == 0) {
