@@ -6,22 +6,17 @@
 
 #define FINAL_SCORE 3
 
-void reset_game();
-void reset_round();
-
-char moves_count;   // Keeps track of the number of moves
-char moves[3];      // Markers on row 1
+void game_reset();
 
 char ai;            // The difficulty of the ai from 1-3 (0 if 2 players)
 char player1_turn;  // If it's player 1 that's up to do next move
 
-char result_round;        // 0 if draw, other wise 1 or 2 depnding on winner
 char player_1_score;
 char player_2_score;
 
 /* Resets the functions for a new game */
-void reset_game(void) {
-    reset_round();
+void game_reset(void) {
+    board_reset();
     ai = 0;
 
     player1_turn = 1;
@@ -30,23 +25,13 @@ void reset_game(void) {
     player_2_score = 0;
 }
 
-/* Resets the functions for a new round */
-void reset_round(void) {
-    moves_count = 0;
-    moves[0] = 0;
-    moves[1] = 0;
-    moves[2] = 0;
-
-    result_round = 0;
-}
-
 int main() {
 
     /* Half pseudo-function flow below */
 
     /* Loop forever to keep the game going */
     while (1) {
-        reset_game();
+        game_reset();
 
         /* Stalling: Determine 1 or 2 players. If 1 player, set ai to 1 */
 
@@ -55,9 +40,9 @@ int main() {
         }
 
         while (player_1_score != FINAL_SCORE && player_2_score != FINAL_SCORE) {
-            reset_round();
+            board_reset();
 
-            while (moves_count < 9 && result_round == 0) {
+            while (board_moves_count < 9 && board_result_round == 0) {
                 if (player1_turn == 1) {
                     /* Stalling: Read input from player 1 */
                 } else {
@@ -68,20 +53,22 @@ int main() {
                         /* Stalling: Read input from player 2 */
                     }
                 }
-                moves_count++;
+                board_moves_count++;
                 player1_turn = !player1_turn; // Sets player1_turn to 1 or 0 depending on last value
 
                 /* Do check if a player has three in a row , if so quit the loop */
             }
 
-            if (result_round != 0) {
-                if (result_round == 1) {
+            if (board_result_round != 0) {
+                if (board_result_round == 1) {
                     player_1_score++;
                 } else {
                     player_2_score++;
                 }
                 /* Flash the winning row a couple of times */
             } else {
+                player_1_score++;
+                player_2_score++;
                 /* Do a slight delay and maybe blink some lights to indicate the game is over */
             }
         }
