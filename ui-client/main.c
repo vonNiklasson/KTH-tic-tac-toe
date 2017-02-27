@@ -1,12 +1,10 @@
-#include <pic32mx.h>
 #include "../shared/board.c"
-
-/* Using char instead of int since no 
- * number will be higher than 255 anyway */
+//#include "platform.c" (Will be included during compile)
 
 #define FINAL_SCORE 3
 
-void game_reset();
+/* Using char instead of int since no
+ * number will be higher than 255 anyway */
 
 char ai;            // The difficulty of the ai from 1-3 (0 if 2 players)
 char player1_turn;  // If it's player 1 that's up to do next move
@@ -15,7 +13,7 @@ char player_1_score;
 char player_2_score;
 
 /* Resets the functions for a new game */
-void game_reset(void) {
+void game_reset() {
     board_reset();
     ai = 0;
 
