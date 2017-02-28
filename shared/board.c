@@ -2,7 +2,7 @@
 
 void board_reset();         // Resets the state of the board
 char board_get_position(const int row, const int col);
-char board_set_position(const int row, const int col, char value);
+void board_set_position(const int row, const int col, char value);
 char board_player_has_won(void);
 char board_count_moves(const char player_id);
 
@@ -40,7 +40,7 @@ char board_get_position(const int row, const int col) {
  O 1 x x x
  W 2 x x x
  */
-void board_set_poisition(const int row, const int col, char value) {
+void board_set_position(const int row, const int col, char value) {
     board_moves[row] &= ~(3 << (6 - col*2));
     board_moves[row] |= value << (6 - col*2);
 }
@@ -96,11 +96,11 @@ char board_count_moves(const char player_id) {
 
 /*
 int main() {
-    board_set_poisition(0, 0, 2);
-    board_set_poisition(1, 0, 2);
-    board_set_poisition(2, 0, 2);
-    board_set_poisition(1, 1, 1);
-    board_set_poisition(2, 2, 2);
+    board_set_position(0, 0, 2);
+    board_set_position(1, 0, 2);
+    board_set_position(2, 0, 2);
+    board_set_position(1, 1, 1);
+    board_set_position(2, 2, 2);
     char winning = board_player_has_won();
     printf("Player has won:\t %d\n", winning);
 }

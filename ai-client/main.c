@@ -3,6 +3,7 @@
 void init_GPIO(void);
 char strat_can_win(const char pid, char *row, char *col);
 char _strat_can_win_3(const char pid, const char pos1, const char pos2, const char pos3);
+char strat_can_fork(const char pid, const char oid, char *row, char *col);
 char strat_can_play_corner_or_center(char *row, char *col);
 char strat_can_play_opposite_corner(const char opponent_id, char *row, char *col);
 char strat_can_play_any_corner(char *row, char *col);
@@ -35,9 +36,9 @@ int main(void) {
 
         /* Stalling: Wait for recieving data */
         // Test data
-        //board_moves[0] = 0b10000100;
-        //board_moves[1] = 0b00010000;
-        //board_moves[2] = 0b01001000;
+        board_moves[0] = 0b10000000;
+        board_moves[1] = 0b00010000;
+        board_moves[2] = 0b00001000;
         board_moves_count = board_count_moves(0);
         // End test data
 
@@ -56,8 +57,12 @@ int main(void) {
             if (found_strategy) break;
 
             /* TODO: Create a fork */
+            found_strategy = strat_can_fork(player_id, opponent_id, &next_row, &next_col);
+            if (found_strategy) break;
 
             /* TODO: Block a fork */
+            found_strategy = strat_can_fork(opponent_id, player_id, &next_row, &next_col);
+            if (found_strategy) break;
 
             /* Play in a corner if it's the first move,
              * otherwise, play in the center if it works*/
@@ -167,6 +172,37 @@ char _strat_can_win_3(const char pid, const char pos1, const char pos2, const ch
     }
 }
 
+char strat_can_fork(const char pid, const char oid, char *row, char *col) {
+    int i;
+    int j;
+
+    char temp_row;
+    char temp_col;
+    char temp;
+
+    char fork_exist = 0;
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            if (board_get_position(i, j) == 0) {
+                board_set_position(i, j, pid);  // Sumilate the position to the player id
+                if (strat_can_win(pid, &temp_row, &temp_col)) {
+                    board_set_position(temp_row, temp_col, oid);  // Simulate a block
+                    fork_exist = strat_can_win(pid, &temp, &temp);
+                    board_set_position(temp_row, temp_col, 0);    // Reset the simulate block
+                }
+                board_set_position(i, j, 0);    // Resets the simulated position
+
+                if (fork_exist) {
+                    *row = i;
+                    *col = j;
+                    return 1;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
 
 char strat_can_play_corner_or_center(char *row, char *col) {
     if (board_count_moves(0) == 0) {
