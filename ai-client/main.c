@@ -66,13 +66,17 @@ void get_next_move(const char player_id, const char opponent_id, const char diff
     found_strategy = strat_can_win(opponent_id, row, col);
     if (found_strategy) return;
 
-    /* TODO: Create a fork */
-    found_strategy = strat_can_fork(player_id, opponent_id, row, col);
-    if (found_strategy) return;
+    /* Create a fork (only on difficulty level 3) */
+    if (difficulty > 2) {
+        found_strategy = strat_can_fork(player_id, opponent_id, row, col);
+        if (found_strategy) return;
+    }
 
-    /* TODO: Block a fork */
-    found_strategy = strat_can_fork(opponent_id, player_id, row, col);
-    if (found_strategy) return;
+    /* Block a fork (only on difficulty level 2 or higher) */
+    if (difficulty > 1) {
+        found_strategy = strat_can_fork(opponent_id, player_id, row, col);
+        if (found_strategy) return;
+    }
 
     /* Play in a corner if it's the first move,
      * otherwise, play in the center if it works*/
