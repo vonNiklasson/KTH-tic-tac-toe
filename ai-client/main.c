@@ -55,9 +55,9 @@ int main(void) {
             found_strategy = strat_can_win(opponent_id, &next_row, &next_col);
             if (found_strategy) break;
 
-            /* Create a fork */
+            /* TODO: Create a fork */
 
-            /* Block a fork */
+            /* TODO: Block a fork */
 
             /* Play in a corner if it's the first move,
              * otherwise, play in the center if it works*/
