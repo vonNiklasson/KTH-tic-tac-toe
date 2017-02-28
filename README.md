@@ -34,6 +34,14 @@ Contains the code that will be shared between the clients (ie game board and pro
 * 12: G: `0b10000000`
 * 13: G: `0b1000000`
 * A: B: `0b1`
+* 34: D: `0b100000`
+* 35: D: `0b100000000000`
+* 36: D: `0b1000000`
+* 37: D: `0b10000000`
+* 38: F: `0b1000000`
+* 39: F: `0b10000`
+* 40: F: `0b100000`
+* 41: B: `0b10`
 
 ### J7 (Analog)
 * A0: B: `0b100`
