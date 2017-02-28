@@ -4,6 +4,7 @@ void board_reset();         // Resets the state of the board
 char board_get_position(const int row, const int col);
 char board_set_position(const int row, const int col, char value);
 char board_player_has_won(void);
+char board_count_moves(const char player_id);
 
 char board_moves_count;             // Keeps track of the number of moves
 unsigned char board_moves[3] = "";  // Markers per row
@@ -75,18 +76,22 @@ char board_player_has_won(void) {
     return 0;
 }
 
-char board_count_moves(void) {
+char board_count_moves(const char player_id) {
     int count = 0;
     int i;
     int j;
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
-            if (board_get_position(i, j) != 0) {
+            if (board_get_position(i, j) == player_id) {
                 count++;
             }
         }
     }
-    return count;
+    if (player_id == 0) {
+        return 9 - count;
+    } else {
+        return count;
+    }
 }
 
 /*
