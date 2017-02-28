@@ -23,7 +23,6 @@ Contains the code that will be shared between the clients (ie game board and pro
 * 12: G: `0b10000000`
 * 13: G: `0b1000000`
 * A: B: `0b1`
-
 * A0: B: `0b100`
 * A1: B: `0b10000`
 * A2: B: `0b100000000`
