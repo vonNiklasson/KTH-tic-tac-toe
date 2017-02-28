@@ -46,7 +46,7 @@ void board_set_poisition(const int row, const int col, char value) {
 
 char board_player_has_won(void) {
     int i;
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < 3; i++) {
         /* Check each column and row for a tree in a row*/
         if (board_get_position(0, i) == board_get_position(1, i) &&
             board_get_position(0, i) == board_get_position(2, i) &&
