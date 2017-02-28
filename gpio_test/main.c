@@ -83,12 +83,6 @@ TRISB &= ~0b10000;
 // GPIO A2
 TRISB &= ~0b100000000;
 
-// GPIO A3 - No response for output
-
-// GPIO A4 - No response for output
-
-// GPIO A5 - No response for output
-
 // GPIO A6
 TRISB &= ~0b1000;
 
@@ -97,10 +91,6 @@ TRISB &= ~0b100000;
 
 // GPIO A8
 TRISB &= ~0b1000000000;
-
-// GPIO A9 - No response for output
-
-// GPIO A10 - No response for output
 
 // GPIO A11
 TRISB &= ~0b1000000000000000;
@@ -152,5 +142,17 @@ TRISF &= ~0b100000;
 
 // GPIO 41
 TRISB &= ~0b10;
+
+
+
+// GPIO A9 - No response for output
+
+// GPIO A10 - No response for output
+
+// GPIO A3 - No response for output
+
+// GPIO A4 - No response for output
+
+// GPIO A5 - No response for output
 
 */
