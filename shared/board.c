@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 void board_reset();         // Resets the state of the board
-char board_get_position(const char row, const char col);
-char board_set_position(const char row, const char col, char value);
+char board_get_position(const int row, const int col);
+char board_set_position(const int row, const int col, char value);
 char board_player_has_won(void);
 
 char board_moves_count;             // Keeps track of the number of moves
@@ -27,7 +27,7 @@ void board_reset(void) {
  O 1 x x x
  W 2 x x x
  */
-char board_get_position(const char row, const char col) {
+char board_get_position(const int row, const int col) {
     return ((board_moves[row] >> (6 - col*2)) & 3);
 }
 
@@ -39,7 +39,7 @@ char board_get_position(const char row, const char col) {
  O 1 x x x
  W 2 x x x
  */
-void board_set_poisition(const char row, const char col, char value) {
+void board_set_poisition(const int row, const int col, char value) {
     board_moves[row] &= ~(3 << (6 - col*2));
     board_moves[row] |= value << (6 - col*2);
 }
