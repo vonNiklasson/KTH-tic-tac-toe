@@ -1,5 +1,6 @@
 #include "../shared/board.c"
 
+void get_next_move(const char player_id, const char opponent_id, const char difficulty, char *row, char *col);
 void init_GPIO(void);
 char strat_can_win(const char pid, char *row, char *col);
 char _strat_can_win_3(const char pid, const char pos1, const char pos2, const char pos3);
@@ -23,64 +24,25 @@ int main(void) {
     init_GPIO();
 
     /* Loop forever */
-    //char difficulty = 0;
+    char difficulty = 0;
     char next_row = 0;
     char next_col = 0;
 
-    char found_strategy = 0;
-
     while (1) {
         board_reset();
-        next_row = 0;
-        next_col = 0;
+        next_row = -1;
+        next_col = -1;
 
         /* Stalling: Wait for recieving data */
         // Test data
-        board_moves[0] = 0b10000000;
-        board_moves[1] = 0b00010000;
-        board_moves[2] = 0b00001000;
+        board_moves[0] = 0b01001000;
+        board_moves[1] = 0b10010100;
+        board_moves[2] = 0b01011000;
         board_moves_count = board_count_moves(0);
         // End test data
 
-        found_strategy = 0;
 
-        while (1) {
-            /* Reset the vary move */
-            if (vary_move > 3) vary_move = 0;
-
-            /* Check if can win */
-            found_strategy = strat_can_win(player_id, &next_row, &next_col);
-            if (found_strategy) break;
-
-            /* Check if can block */
-            found_strategy = strat_can_win(opponent_id, &next_row, &next_col);
-            if (found_strategy) break;
-
-            /* TODO: Create a fork */
-            found_strategy = strat_can_fork(player_id, opponent_id, &next_row, &next_col);
-            if (found_strategy) break;
-
-            /* TODO: Block a fork */
-            found_strategy = strat_can_fork(opponent_id, player_id, &next_row, &next_col);
-            if (found_strategy) break;
-
-            /* Play in a corner if it's the first move,
-             * otherwise, play in the center if it works*/
-            found_strategy = strat_can_play_corner_or_center(&next_row, &next_col);
-            if (found_strategy) break;
-
-            /* Play opposite corner */
-            found_strategy = strat_can_play_opposite_corner(opponent_id, &next_row, &next_col);
-            if (found_strategy) break;
-
-            /* Play a corner */
-            found_strategy = strat_can_play_any_corner(&next_row, &next_col);
-            if (found_strategy) break;
-
-            /* Play a side */
-            found_strategy = strat_can_play_any_side(&next_row, &next_col);
-            if (found_strategy) break;
-        }
+        get_next_move(player_id, opponent_id, difficulty, &next_row, &next_col);
 
         /* Transmit the given move that will be saved in next_row & next_col */
         printf("Next row: %d\n", next_row);
@@ -88,6 +50,46 @@ int main(void) {
         printf("------------\n");
         break;
     }
+}
+
+void get_next_move(const char player_id, const char opponent_id, const char difficulty, char *row, char *col) {
+    char found_strategy = 0;
+
+    /* Reset the vary move */
+    if (vary_move > 3) vary_move = 0;
+
+    /* Check if can win */
+    found_strategy = strat_can_win(player_id, row, col);
+    if (found_strategy) return;
+
+    /* Check if can block */
+    found_strategy = strat_can_win(opponent_id, row, col);
+    if (found_strategy) return;
+
+    /* TODO: Create a fork */
+    found_strategy = strat_can_fork(player_id, opponent_id, row, col);
+    if (found_strategy) return;
+
+    /* TODO: Block a fork */
+    found_strategy = strat_can_fork(opponent_id, player_id, row, col);
+    if (found_strategy) return;
+
+    /* Play in a corner if it's the first move,
+     * otherwise, play in the center if it works*/
+    found_strategy = strat_can_play_corner_or_center(row, col);
+    if (found_strategy) return;
+
+    /* Play opposite corner */
+    found_strategy = strat_can_play_opposite_corner(opponent_id, row, col);
+    if (found_strategy) return;
+
+    /* Play a corner */
+    found_strategy = strat_can_play_any_corner(row, col);
+    if (found_strategy) return;
+
+    /* Play a side */
+    found_strategy = strat_can_play_any_side(row, col);
+    if (found_strategy) return;
 }
 
 /* Setup eventual GPIO ports here */
