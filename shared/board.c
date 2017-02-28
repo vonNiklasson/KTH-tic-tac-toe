@@ -75,6 +75,20 @@ char board_player_has_won(void) {
     return 0;
 }
 
+char board_count_moves(void) {
+    int count = 0;
+    int i;
+    int j;
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            if (board_get_position(i, j) != 0) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
 /*
 int main() {
     board_set_poisition(0, 0, 2);
