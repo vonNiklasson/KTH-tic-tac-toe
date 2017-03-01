@@ -19,6 +19,8 @@ void send_data(const char row, const char col);
 
 /* Global var to spread the "don't care" moves */
 char vary_move = 1;
+/* Global variable so the protocol can access it */
+char difficulty = 0;
 
 int main(void) {
     hdp_initialize();
@@ -30,35 +32,16 @@ int main(void) {
     /* Setup GPIO ports */
     init_GPIO();
 
-    /* Loop forever */
-    char difficulty = 0;
     char next_row = 0;
     char next_col = 0;
 
+    /* Loop forever */
     while(1) {
         board_reset();
-        next_row = -1;
-        next_col = -1;
-
         /* Stalling: Wait for recieving data */
         poll_read_data();
-        // Test data
-        //board_moves[0] = 0b01001000;
-        //board_moves[1] = 0b10010100;
-        //board_moves[2] = 0b01011000;
-        // End test data
-        
-        board_moves_count = board_count_moves(0);
-
         get_next_move(player_id, opponent_id, difficulty, &next_row, &next_col);
-
         send_data(next_row, next_col);
-
-        /* Transmit the given move that will be saved in next_row & next_col */
-        //printf("Next row: %d\n", next_row);
-        //printf("Next col: %d\n", next_col);
-        //printf("------------\n");
-        //break;
     }
 }
 
@@ -339,6 +322,10 @@ char strat_can_play_any_side(char *row, char *col) {
 
 void poll_read_data(void) {
     hdp_recieve();
+    difficulty = hdp_recieve_data[0];
+    board_moves[0] = hdp_recieve_data[1];
+    board_moves[1] = hdp_recieve_data[2];
+    board_moves[2] = hdp_recieve_data[3];
 }
 
 void send_data(const char row, const char col) {
