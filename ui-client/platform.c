@@ -1,5 +1,6 @@
 #include <pic32mx.h>
 
+void platform_delay(int milliseconds);
 char platform_get_button_state(const char row, const char col);
 char platform_get_any_button_state(char *row, char *col);
 void platform_set_led(const char row, const char col, char state);
@@ -10,6 +11,10 @@ void _PORTD(int state, int shift);
 void _PORTE(int state, int shift);
 void _PORTF(int state, int shift);
 void _PORTG(int state, int shift);
+
+void platform_delay(int milliseconds) {
+    /* TODO: Define a delay function here */
+}
 
 /* Setup inputs & outputs etc */
 void platform_init(void) {
