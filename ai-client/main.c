@@ -13,11 +13,15 @@ char strat_can_play_opposite_corner(const char opponent_id, char *row, char *col
 char strat_can_play_any_corner(char *row, char *col);
 char strat_can_play_any_side(char *row, char *col);
 
+void poll_read_data(void);
+void send_data(const char row, const char col);
+
 
 /* Global var to spread the "don't care" moves */
 char vary_move = 1;
 
 int main(void) {
+    hdp_initialize();
 
     /* Player id */
     char player_id = 2;
@@ -31,27 +35,30 @@ int main(void) {
     char next_row = 0;
     char next_col = 0;
 
-    while (1) {
+    while(1) {
         board_reset();
         next_row = -1;
         next_col = -1;
 
         /* Stalling: Wait for recieving data */
+        poll_read_data();
         // Test data
-        board_moves[0] = 0b01001000;
-        board_moves[1] = 0b10010100;
-        board_moves[2] = 0b01011000;
-        board_moves_count = board_count_moves(0);
+        //board_moves[0] = 0b01001000;
+        //board_moves[1] = 0b10010100;
+        //board_moves[2] = 0b01011000;
         // End test data
-
+        
+        board_moves_count = board_count_moves(0);
 
         get_next_move(player_id, opponent_id, difficulty, &next_row, &next_col);
 
+        send_data(next_row, next_col);
+
         /* Transmit the given move that will be saved in next_row & next_col */
-        printf("Next row: %d\n", next_row);
-        printf("Next col: %d\n", next_col);
-        printf("------------\n");
-        break;
+        //printf("Next row: %d\n", next_row);
+        //printf("Next col: %d\n", next_col);
+        //printf("------------\n");
+        //break;
     }
 }
 
@@ -328,4 +335,17 @@ char strat_can_play_any_side(char *row, char *col) {
     }
 
     return 0;
+}
+
+void poll_read_data(void) {
+    hdp_recieve();
+}
+
+void send_data(const char row, const char col) {
+    hdp_bitrate = hdp_get_nearest_bitrate(200);
+
+    hdp_data_set_byte(hdp_send_data, DATA_BYTES_RESERVED, 0, row);
+    hdp_data_set_byte(hdp_send_data, DATA_BYTES_RESERVED, 1, col);
+
+    hdp_transmit();
 }
