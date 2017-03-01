@@ -8,7 +8,7 @@ char play_round(char player1_turn, const char ai);
 char poll_read_player_select(void);
 char poll_read_ai_select(void);
 void poll_read_valid_move(char *row, char *col);
-void poll_read_ai_move(char *row, char *col);
+void poll_read_ai_move(const char difficulty, char *row, char *col);
 
 void print_game_state(void);
 void print_game_score(const char p1_score, const char p2_score);
@@ -102,7 +102,7 @@ char play_round(char player1_turn, const char ai) {
             } else {
                 /* Send board and difficulty to ai-client */
                 /* Stalling: Recieve next move */
-                poll_read_ai_move(&next_row, &next_col);
+                poll_read_ai_move(difficulty, &next_row, &next_col);
             }
             board_set_position(next_row, next_col, 2);
         }
@@ -180,9 +180,24 @@ void poll_read_valid_move(char *row, char *col) {
     }
 }
 
-void poll_read_ai_move(char *row, char *col) {
-    while (1) {}
-    // TODO: Make a nice protocol here
+void poll_read_ai_move(const char difficulty, char *row, char *col) {
+    hdp_initialize();
+
+    hdp_bitrate = hdp_get_nearest_bitrate(200);
+
+    hdp_data_set_byte(hdp_send_data, DATA_BYTES_RESERVED, 0, difficulty);
+    hdp_data_set_byte(hdp_send_data, DATA_BYTES_RESERVED, 1, board_moves[0]);
+    hdp_data_set_byte(hdp_send_data, DATA_BYTES_RESERVED, 2, board_moves[1]);
+    hdp_data_set_byte(hdp_send_data, DATA_BYTES_RESERVED, 3, board_moves[2]);
+
+    hdp_transmit();
+
+    /* Now wait for response */
+    hdp_recieve();
+
+    *row = hdp_recieve_data[0];
+    *col = hdp_recieve_data[1];
+    return;
 }
 
 /* Loop through and print the current game state */
