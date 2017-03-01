@@ -1,4 +1,6 @@
 #include "../shared/board.c"
+#include "../shared/protocol.c"
+#include "../shared/protocol_platform_wiringpi.c"
 
 void get_next_move(const char player_id, const char opponent_id, const char difficulty, char *row, char *col);
 void init_GPIO(void);

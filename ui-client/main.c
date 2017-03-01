@@ -1,4 +1,6 @@
 #include "../shared/board.c"
+#include "../shared/protocol.c"
+#include "../shared/protocol_platform_pic32mx.c"
 //#include "platform.c" (Will be included during compile)
 
 void play_game(void);
