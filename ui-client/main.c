@@ -104,7 +104,7 @@ char play_round(char player1_turn, const char ai) {
             }
             board_set_position(next_row, next_col, 2);
         }
-        /* TODO: Print current state with LEDs */
+        /* Print current state with LEDs */
         print_game_state();
 
         board_moves_count = board_count_moves(0);
