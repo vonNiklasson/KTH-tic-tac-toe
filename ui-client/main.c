@@ -8,6 +8,10 @@ char poll_read_ai_select(void);
 void poll_read_valid_move(char *row, char *col);
 void poll_read_ai_move(char *row, char *col);
 
+void print_game_state(void);
+void print_game_score(const char p1_score, const char p2_score);
+void clear_led_and_mini_wait(void);
+
 #define FINAL_SCORE 3
 
 /* Using char instead of int since no
@@ -42,16 +46,21 @@ void play_game(void) {
         ai = 0;
     }
 
+    clear_led_and_mini_wait();
+
     if (ai != 0) {
         /* Stalling: Determine AI level (easy, medium or hard). Sets ai to 1-3 */
         ai = poll_read_ai_select();
     }
+
+    clear_led_and_mini_wait();
 
     while (player_1_score != FINAL_SCORE && player_2_score != FINAL_SCORE) {
         platform_set_all_led(0);
         player1_start = rounds_played % 2;
 
         board_result_round = play_round(player1_start, ai);
+        platform_delay(500);
 
         if (board_result_round != 0) {
             if (board_result_round == 1) {
@@ -65,7 +74,10 @@ void play_game(void) {
             player_2_score++;
         }
         rounds_played++;
-        /* TODO: Wait a moment before starting the new match */
+        /* Show the score and wait a moment before starting the new match */
+        platform_delay(1000);
+        print_game_score();
+        platform_delay(1500);
     }
     /* TODO: Do a slight delay and maybe blink some lights to indicate the game is over */
 }
@@ -185,4 +197,9 @@ void print_game_state(void) {
 /* Prints the current score on row 2-0 on col 0 and 2 */
 void print_game_score(const char p1_score, const char p2_score) {
 
+}
+
+void clear_led_and_mini_wait(void) {
+    platform_set_all_led(0);
+    platform_delay(50);
 }
