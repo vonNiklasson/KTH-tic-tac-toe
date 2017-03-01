@@ -10,7 +10,7 @@ void poll_read_ai_move(char *row, char *col);
 
 void print_game_state(void);
 void print_game_score(const char p1_score, const char p2_score);
-void clear_led_and_mini_wait(void);
+void clear_led_and_mini_sleep(void);
 
 #define FINAL_SCORE 3
 
@@ -46,21 +46,21 @@ void play_game(void) {
         ai = 0;
     }
 
-    clear_led_and_mini_wait();
+    clear_led_and_mini_sleep();
 
     if (ai != 0) {
         /* Stalling: Determine AI level (easy, medium or hard). Sets ai to 1-3 */
         ai = poll_read_ai_select();
     }
 
-    clear_led_and_mini_wait();
+    clear_led_and_mini_sleep();
 
     while (player_1_score != FINAL_SCORE && player_2_score != FINAL_SCORE) {
         platform_set_all_led(0);
         player1_start = rounds_played % 2;
 
         board_result_round = play_round(player1_start, ai);
-        platform_delay(500);
+        platform_sleep(500);
 
         if (board_result_round != 0) {
             if (board_result_round == 1) {
@@ -75,9 +75,9 @@ void play_game(void) {
         }
         rounds_played++;
         /* Show the score and wait a moment before starting the new match */
-        platform_delay(1000);
-        print_game_score();
-        platform_delay(1500);
+        platform_sleep(1000);
+        print_game_score(player_1_score, player_2_score);
+        platform_sleep(1500);
     }
     /* TODO: Do a slight delay and maybe blink some lights to indicate the game is over */
 }
@@ -189,7 +189,7 @@ void print_game_state(void) {
     int i;
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
-            platform_set_led(i, j, position_get_state(i, j));
+            platform_set_led(i, j, board_get_position(i, j));
         }
     }
 }
@@ -207,7 +207,7 @@ void print_game_score(const char p1_score, const char p2_score) {
     }
 }
 
-void clear_led_and_mini_wait(void) {
+void clear_led_and_mini_sleep(void) {
     platform_set_all_led(0);
-    platform_delay(50);
+    platform_sleep(50);
 }

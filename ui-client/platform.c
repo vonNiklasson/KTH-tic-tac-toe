@@ -1,6 +1,11 @@
 #include <pic32mx.h>
 
-void platform_delay(int milliseconds);
+#define TIMERPERIOD ((80000000 / 64) / 1000)
+#if TIMERPERIOD > 0xffff
+#error "Timer period is too big."
+#endif
+
+void platform_sleep(int milliseconds);
 char platform_get_button_state(const char row, const char col);
 char platform_get_any_button_state(char *row, char *col);
 void platform_set_led(const char row, const char col, char state);
@@ -12,8 +17,13 @@ void _PORTE(int state, int shift);
 void _PORTF(int state, int shift);
 void _PORTG(int state, int shift);
 
-void platform_delay(const int milliseconds) {
-    /* TODO: Define a delay function here */
+void platform_sleep(const int milliseconds) {
+    int i;
+    for (i = 0; i < milliseconds; i++) {
+        while ((IFS(0) & 0x100) == 0);
+        IFSCLR(0) = 0x100;
+    }
+    return;
 }
 
 /* Setup inputs & outputs etc */
@@ -29,6 +39,15 @@ void platform_init(void) {
     TRISECLR = 0b11111111;
     TRISFCLR = 0b1110000;
     TRISBCLR = 0b10;
+
+    /* Set the prescaling to 64:1
+    * bit 4-6 decides the prescaling
+    * 0x60 == 01100000 */
+    T2CON = 0x60;
+    /* Count from 0 */
+    TMR2 = 0x00;
+    /* Count to period set above */
+    PR2 = TIMERPERIOD;
 }
 
 /* Gets the state of the button input */
