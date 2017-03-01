@@ -167,3 +167,7 @@ void poll_read_ai_move(char *row, char *col) {
     while (1) {}
     // TODO: Make a nice protocol here
 }
+
+void print_game_state(void) {
+    /* TODO: Loop through and print the current game state */
+}
