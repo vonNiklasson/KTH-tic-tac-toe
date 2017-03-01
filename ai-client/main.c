@@ -2,6 +2,7 @@
 
 void get_next_move(const char player_id, const char opponent_id, const char difficulty, char *row, char *col);
 void init_GPIO(void);
+char _strat_can_win(const char pid, char *row, char *col);
 char strat_can_win(const char pid, char *row, char *col);
 char _strat_can_win_3(const char pid, const char pos1, const char pos2, const char pos3);
 char strat_can_fork(const char pid, const char oid, char *row, char *col);
@@ -99,6 +100,36 @@ void get_next_move(const char player_id, const char opponent_id, const char diff
 /* Setup eventual GPIO ports here */
 void init_GPIO(void) {
 
+}
+
+char _strat_can_win(const char pid, char *row, char *col) {
+    int i;
+    int j;
+
+    char temp_row;
+    char temp_col;
+    char temp;
+
+    char can_win = 0;
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            if (board_get_position(i, j) == 0) {
+                board_set_position(i, j, pid);  // Sumilate the position to the player id
+                if (strat_can_win(pid, &temp_row, &temp_col)) {
+                    can_win = 1;
+                }
+                board_set_position(i, j, 0);    // Resets the simulated position
+
+                if (can_win) {
+                    *row = i;
+                    *col = j;
+                    return 1;
+                }
+            }
+        }
+    }
+
+    return 0;
 }
 
 char strat_can_win(const char pid, char *row, char *col) {
