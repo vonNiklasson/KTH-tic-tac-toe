@@ -196,7 +196,15 @@ void print_game_state(void) {
 
 /* Prints the current score on row 2-0 on col 0 and 2 */
 void print_game_score(const char p1_score, const char p2_score) {
+    int i;
+    for (i = 0; i < p1_score; i++) {
+        platform_set_led(2-i, 0, 1);
+    }
 
+    int j;
+    for (j = 0; j < p2_score; j++) {
+        platform_set_led(2-j, 2, 2);
+    }
 }
 
 void clear_led_and_mini_wait(void) {
