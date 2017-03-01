@@ -121,6 +121,9 @@ char play_round(char player1_turn, const char ai) {
 }
 
 char poll_read_player_select(void) {
+    platform_set_led(0, 0, 3);
+    platform_set_led(0, 2, 3);
+
     /* Wait for a button to be pressed */
     while (platform_get_button_state(0, 0) == 0 && 
            platform_get_button_state(0, 2) == 0) {};
@@ -142,6 +145,10 @@ char poll_read_player_select(void) {
 
 
 char poll_read_ai_select(void) {
+    platform_set_led(0, 0, 3);
+    platform_set_led(0, 1, 3);
+    platform_set_led(0, 2, 3);
+
     /* Wait for a button to be pressed */
     while (platform_get_button_state(0, 0) == 0 && 
            platform_get_button_state(0, 1) == 0 && 
