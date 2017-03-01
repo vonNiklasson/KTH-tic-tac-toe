@@ -21,6 +21,8 @@ void clear_led_and_mini_sleep(void);
 
 int main() {
 
+    platform_init();
+
     /* Loop forever to keep the game going */
     while (1) {
         play_game();
