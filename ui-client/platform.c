@@ -12,7 +12,7 @@ void _PORTE(int state, int shift);
 void _PORTF(int state, int shift);
 void _PORTG(int state, int shift);
 
-void platform_delay(int milliseconds) {
+void platform_delay(const int milliseconds) {
     /* TODO: Define a delay function here */
 }
 
