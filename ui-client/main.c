@@ -171,6 +171,18 @@ void poll_read_ai_move(char *row, char *col) {
     // TODO: Make a nice protocol here
 }
 
+/* Loop through and print the current game state */
 void print_game_state(void) {
-    /* TODO: Loop through and print the current game state */
+    int j;
+    int i;
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            platform_set_led (i, j, position_get_state(i, j));
+        }
+    }
+}
+
+/* Prints the current score on row 2-0 on col 0 and 2 */
+void print_game_score(const char p1_score, const char p2_score) {
+
 }
