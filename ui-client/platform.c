@@ -18,11 +18,13 @@ void _PORTF(int state, int shift);
 void _PORTG(int state, int shift);
 
 void platform_sleep(const int milliseconds) {
+    T2CONSET = 0x8000;
     int i;
     for (i = 0; i < milliseconds; i++) {
         while ((IFS(0) & 0x100) == 0);
         IFSCLR(0) = 0x100;
     }
+    T2CONCLR = 0x8000;
     return;
 }
 
