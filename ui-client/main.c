@@ -177,7 +177,7 @@ void print_game_state(void) {
     int i;
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
-            platform_set_led (i, j, position_get_state(i, j));
+            platform_set_led(i, j, position_get_state(i, j));
         }
     }
 }
