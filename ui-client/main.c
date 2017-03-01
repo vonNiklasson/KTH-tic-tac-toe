@@ -102,7 +102,7 @@ char play_round(char player1_turn, const char ai) {
             } else {
                 /* Send board and difficulty to ai-client */
                 /* Stalling: Recieve next move */
-                poll_read_ai_move(difficulty, &next_row, &next_col);
+                poll_read_ai_move(ai, &next_row, &next_col);
             }
             board_set_position(next_row, next_col, 2);
         }
