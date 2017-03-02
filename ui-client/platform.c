@@ -10,6 +10,7 @@ char platform_get_button_state(const char row, const char col);
 char platform_get_any_button_state(char *row, char *col);
 void platform_set_led(const char row, const char col, char state);
 void platform_set_all_led(const unsigned char state);
+void platform_set_player_led(const unsigned char player, const unsigned char state);
 
 void _PORTB(int state, int shift);
 void _PORTD(int state, int shift);
@@ -42,6 +43,9 @@ void platform_init(void) {
     TRISECLR = 0b11111111;
     TRISFCLR = 0b1110000;
     TRISBCLR = 0b10;
+
+    // Sets analog leds to pinout
+    TRISBCLR = 0b10100;
 
     /* Set the prescaling to 64:1
     * bit 4-6 decides the prescaling
@@ -156,6 +160,14 @@ void platform_set_all_led(const unsigned char state) {
         for (j = 0; j < 3; j++) {
             platform_set_led(i, j, state);
         }
+    }
+}
+
+void platform_set_player_led(const unsigned char player, const unsigned char state) {
+    if (player == 1) {
+        _PORTB(!state, 2);
+    } else if (player == 2) {
+        _PORTB(!state, 4);
     }
 }
 

@@ -45,13 +45,13 @@ void get_next_move(const char player_id, const char opponent_id, const char diff
         if (found_strategy) return;
     }
 
+    /* Play opposite corner */
+    found_strategy = strat_can_play_opposite_corner(opponent_id, row, col);
+    if (found_strategy) return;
+
     /* Play in a corner if it's the first move,
      * otherwise, play in the center if it works*/
     found_strategy = strat_can_play_corner_or_center(row, col);
-    if (found_strategy) return;
-
-    /* Play opposite corner */
-    found_strategy = strat_can_play_opposite_corner(opponent_id, row, col);
     if (found_strategy) return;
 
     /* Play a corner */

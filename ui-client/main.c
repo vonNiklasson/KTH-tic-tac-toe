@@ -12,7 +12,7 @@ void poll_read_valid_move(char *row, char *col);
 void poll_read_ai_move(const char difficulty, char *row, char *col);
 
 void print_game_state(void);
-void print_game_score(const char p1_score, const char p2_score);
+void print_game_score(const char p1_score, const char p2_score, const char only_player);
 void clear_led_and_mini_sleep(void);
 
 #define FINAL_SCORE 3
@@ -24,6 +24,8 @@ int main() {
 
     platform_init();
     platform_set_all_led(0);
+    platform_set_player_led(1, 0);
+    platform_set_player_led(2, 0);
 
     /* Loop forever to keep the game going */
     while (1) {
@@ -67,6 +69,12 @@ void play_game(void) {
         player1_start = !(rounds_played % 2);
 
         board_result_round = play_round(player1_start, ai);
+        platform_set_player_led(1, 0);
+        platform_set_player_led(2, 0);
+        platform_sleep(1000);
+
+        clear_led_and_mini_sleep();
+        print_game_score(player_1_score, player_2_score, 0);
 
         if (board_result_round != 0) {
             if (board_result_round == 1) {
@@ -80,10 +88,12 @@ void play_game(void) {
             player_2_score++;
         }
         rounds_played++;
+
         /* Show the score and wait a moment before starting the new match */
-        platform_sleep(1000);
-        clear_led_and_mini_sleep();
-        print_game_score(player_1_score, player_2_score);
+        if (player_1_score != 0 || player_2_score != 0) {
+            platform_sleep(1000);
+        }
+        print_game_score(player_1_score, player_2_score, 0);
         platform_sleep(1500);
     }
     /* TODO: Do a slight delay and maybe blink some lights to indicate the game is over */
@@ -97,10 +107,14 @@ char play_round(char player1_turn, const char ai) {
     board_reset();
     while (board_moves_count < 9 && result == 0) {
         if (player1_turn == 1) {
+            platform_set_player_led(1, 1);
+            platform_set_player_led(2, 0);
             /* Stalling: Read input from player 1 */
             poll_read_valid_move(&next_row, &next_col);
             board_set_position(next_row, next_col, 1);
         } else {
+            platform_set_player_led(1, 0);
+            platform_set_player_led(2, 1);
             if (ai == 0) {
                 /* Stalling: Read input from player 2 */
                 poll_read_valid_move(&next_row, &next_col);
@@ -204,7 +218,9 @@ void poll_read_valid_move(char *row, char *col) {
 
 void poll_read_ai_move(const char difficulty, char *row, char *col) {
     /* Current fix when protocol won't work */
+    platform_sleep(500);
     get_next_move(2, 1, difficulty, row, col);
+    platform_sleep(500);
     return;
 
     hdp_initialize();
@@ -238,16 +254,20 @@ void print_game_state(void) {
 }
 
 /* Prints the current score on row 2-0 on col 0 and 2 */
-void print_game_score(const char p1_score, const char p2_score) {
+void print_game_score(const char p1_score, const char p2_score, const char only_player) {
     platform_set_all_led(0);
 
     int i;
-    for (i = 0; i < p1_score; i++) {
-        platform_set_led(2-i, 0, 1);
+    if (only_player == 0 || only_player == 1) {
+        for (i = 0; i < p1_score; i++) {
+            platform_set_led(2-i, 0, 1);
+        }
     }
 
-    for (i = 0; i < p2_score; i++) {
-        platform_set_led(2-i, 2, 2);
+    if (only_player == 0 || only_player == 2) {
+        for (i = 0; i < p2_score; i++) {
+            platform_set_led(2-i, 2, 2);
+        }
     }
 }
 
