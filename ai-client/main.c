@@ -326,7 +326,10 @@ char strat_can_play_any_side(char *row, char *col) {
 }
 
 void poll_read_data(void) {
+    hdp_bitrate = hdp_get_nearest_bitrate(200);
+
     hdp_recieve();
+
     difficulty = hdp_recieve_data[0];
     board_moves[0] = hdp_recieve_data[1];
     board_moves[1] = hdp_recieve_data[2];
