@@ -204,7 +204,7 @@ void poll_read_valid_move(char *row, char *col) {
 void poll_read_ai_move(const char difficulty, char *row, char *col) {
     hdp_initialize();
 
-    hdp_bitrate = hdp_get_nearest_bitrate(200);
+    hdp_bitrate = hdp_get_nearest_bitrate(50);
 
     hdp_data_set_byte(hdp_send_data, DATA_BYTES_RESERVED, 0, difficulty);
     hdp_data_set_byte(hdp_send_data, DATA_BYTES_RESERVED, 1, board_moves[0]);

@@ -18,13 +18,13 @@ void _PORTF(int state, int shift);
 void _PORTG(int state, int shift);
 
 void platform_sleep(const int milliseconds) {
-    T2CONSET = 0x8000;
-    int i;
-    for (i = 0; i < milliseconds; i++) {
-        while ((IFS(0) & 0x100) == 0);
-        IFSCLR(0) = 0x100;
-    }
-    T2CONCLR = 0x8000;
+    //T2CONSET = 0x8000;
+    //int i;
+    //for (i = 0; i < milliseconds; i++) {
+    //    while ((IFS(0) & 0x100) == 0);
+    //    IFSCLR(0) = 0x100;
+    //}
+    //T2CONCLR = 0x8000;
     return;
 }
 
@@ -45,11 +45,11 @@ void platform_init(void) {
     /* Set the prescaling to 64:1
     * bit 4-6 decides the prescaling
     * 0x60 == 01100000 */
-    T2CON = 0x60;
+    //T2CON = 0x60;
     /* Count from 0 */
-    TMR2 = 0x00;
+    //TMR2 = 0x00;
     /* Count to period set above */
-    PR2 = TIMERPERIOD;
+    //PR2 = TIMERPERIOD;
 }
 
 /* Gets the state of the button input */
