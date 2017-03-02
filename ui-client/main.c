@@ -265,20 +265,15 @@ void print_game_state(void) {
 }
 
 void print_and_blink_game_state_winner(void) {
-    int i;
     int j;
-    int c = 0;
+    int j;
     int on;
-    for (c = 0; c < 8; c++) {
-        for (i = 0; i < 3; i++) {
-            for (j = 0; j < 3; j++) {
-                platform_set_led(i, j, board_get_position(i, j));
-            }
-        }
-        on = (c % 2 == 0);
+    for (i = 0; i < 8; i++) {
+        print_game_state();
+        on = (i % 2 == 0);
         if (on) {
-            for (i = 0; i < 3; i++) {
-                platform_set_led(board_win_rows[i], board_win_cols[i], 0);
+            for (j = 0; j < 3; j++) {
+                platform_set_led(board_win_rows[j], board_win_cols[j], 0);
             }
         }
         platform_sleep(500);
