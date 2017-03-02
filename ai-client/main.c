@@ -98,8 +98,6 @@ char _strat_can_win(const char pid, char *row, char *col) {
     int i;
     int j;
 
-    char temp_row;
-    char temp_col;
     char temp;
 
     char can_win = 0;
@@ -107,7 +105,7 @@ char _strat_can_win(const char pid, char *row, char *col) {
         for (j = 0; j < 3; j++) {
             if (board_get_position(i, j) == 0) {
                 board_set_position(i, j, pid);  // Sumilate the position to the player id
-                if (strat_can_win(pid, &temp_row, &temp_col)) {
+                if (strat_can_win(pid, &temp, &temp)) {
                     can_win = 1;
                 }
                 board_set_position(i, j, 0);    // Resets the simulated position
