@@ -2,6 +2,8 @@
 #include "../shared/protocol.c"
 #include "../shared/protocol_platform_wiringpi.c"
 
+#include <stdio.h>
+
 void get_next_move(const char player_id, const char opponent_id, const char difficulty, char *row, char *col);
 void init_GPIO(void);
 char _strat_can_win(const char pid, char *row, char *col);
@@ -36,11 +38,16 @@ int main(void) {
     char next_col = 0;
 
     /* Loop forever */
+    printf("Starting loop");
     while(1) {
         board_reset();
         /* Stalling: Wait for recieving data */
+        printf("--Waiting for data\n");
         poll_read_data();
+        printf("Recieved data, calculating next move\n");
         get_next_move(player_id, opponent_id, difficulty, &next_row, &next_col);
+        printf("Next move: Row: %d, Col: %d\n", next_row, next_col);
+        printf("Sending data\n");
         send_data(next_row, next_col);
     }
 }
