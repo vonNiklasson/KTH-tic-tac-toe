@@ -45,6 +45,9 @@ void board_set_position(const int row, const int col, char value) {
     board_moves[row] |= value << (6 - col*2);
 }
 
+char board_win_rows[3];
+char board_win_cols[3];
+
 char board_player_has_won(void) {
     int i;
     for (i = 0; i < 3; i++) {
@@ -52,11 +55,23 @@ char board_player_has_won(void) {
         if (board_get_position(0, i) == board_get_position(1, i) &&
             board_get_position(0, i) == board_get_position(2, i) &&
             board_get_position(0, i) != 0) {
+            board_win_rows[0] = 0;
+            board_win_rows[1] = 1;
+            board_win_rows[2] = 2;
+            board_win_cols[0] = i;
+            board_win_cols[1] = i;
+            board_win_cols[2] = i;
             return board_get_position(0, i);
         } else if (
             board_get_position(i, 0) == board_get_position(i, 1) &&
             board_get_position(i, 0) == board_get_position(i, 2) &&
             board_get_position(i, 0) != 0) {
+            board_win_rows[0] = i;
+            board_win_rows[1] = i;
+            board_win_rows[2] = i;
+            board_win_cols[0] = 0;
+            board_win_cols[1] = 1;
+            board_win_cols[2] = 2;
             return board_get_position(i, 0);
         }
     }
@@ -65,11 +80,23 @@ char board_player_has_won(void) {
     if (board_get_position(0, 0) == board_get_position(1, 1) &&
         board_get_position(0, 0) == board_get_position(2, 2) &&
         board_get_position(0, 0) != 0) {
+            board_win_rows[0] = 0;
+            board_win_rows[1] = 1;
+            board_win_rows[2] = 2;
+            board_win_cols[0] = 0;
+            board_win_cols[1] = 1;
+            board_win_cols[2] = 2;
         return board_get_position(0, 0);
     } else if (
         board_get_position(0, 2) == board_get_position(1, 1) &&
         board_get_position(0, 2) == board_get_position(2, 0) &&
         board_get_position(0, 2) != 0) {
+            board_win_rows[0] = 0;
+            board_win_rows[1] = 1;
+            board_win_rows[2] = 2;
+            board_win_cols[0] = 2;
+            board_win_cols[1] = 1;
+            board_win_cols[2] = 0;
         return board_get_position(0, 2);
     }
 

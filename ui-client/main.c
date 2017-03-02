@@ -12,6 +12,7 @@ void poll_read_valid_move(char *row, char *col);
 void poll_read_ai_move(const char difficulty, char *row, char *col);
 
 void print_game_state(void);
+void print_and_blink_game_state_winner(void);
 void print_game_score(const char p1_score, const char p2_score, const char only_player, const char no_reset);
 void print_and_blink_winner_score(const char p1_score, const char p2_score, const char max_score);
 void clear_led_and_mini_sleep(void);
@@ -143,6 +144,10 @@ char play_round(char player1_turn, const char ai) {
         if (result != 0) break;
     }
 
+    if (result != 0) {
+        print_and_blink_game_state_winner();
+    }
+
     return result;
 }
 
@@ -256,6 +261,27 @@ void print_game_state(void) {
         for (j = 0; j < 3; j++) {
             platform_set_led(i, j, board_get_position(i, j));
         }
+    }
+}
+
+void print_and_blink_game_state_winner(void) {
+    int i;
+    int j;
+    int c = 0;
+    int on;
+    for (c = 0; c < 8; c++) {
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
+                platform_set_led(i, j, board_get_position(i, j));
+            }
+        }
+        on = (c % 2 == 0);
+        if (on) {
+            for (i = 0; i < 3; i++) {
+                platform_set_led(board_win_rows[i], board_win_cols[i], 0);
+            }
+        }
+        platform_sleep(500);
     }
 }
 
