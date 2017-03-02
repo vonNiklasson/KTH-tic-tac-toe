@@ -230,7 +230,10 @@ void poll_read_valid_move(char *row, char *col) {
 void poll_read_ai_move(const char difficulty, char *row, char *col) {
     /* Current fix when protocol won't work */
     platform_sleep(500);
-    get_next_move(2, 1, difficulty, row, col);
+    while (1) {
+        get_next_move(2, 1, difficulty, row, col);
+        if (board_get_position(row, col) == 0) break;
+    }
     platform_sleep(500);
     return;
 
@@ -265,12 +268,12 @@ void print_game_state(void) {
 }
 
 void print_and_blink_game_state_winner(void) {
-    int j;
+    int i;
     int j;
     int on;
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 9; i++) {
         print_game_state();
-        on = (i % 2 == 0);
+        on = !(i % 2 == 0);
         if (on) {
             for (j = 0; j < 3; j++) {
                 platform_set_led(board_win_rows[j], board_win_cols[j], 0);
