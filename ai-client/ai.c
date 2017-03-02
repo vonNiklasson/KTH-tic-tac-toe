@@ -4,8 +4,9 @@ void init_GPIO(void);
 char _strat_can_win(const char pid, char *row, char *col);
 char strat_can_win(const char pid, char *row, char *col);
 char _strat_can_win_3(const char pid, const char pos1, const char pos2, const char pos3);
-char strat_can_fork(const char pid, const char oid, char *row, char *col);
+char strat_can_fork(const char pid, const char oid, char *row, char *col, const char invert);
 char strat_can_play_corner_or_center(char *row, char *col);
+void invert_all_moves(void);
 char strat_can_play_opposite_corner(const char opponent_id, char *row, char *col);
 char strat_can_play_any_corner(char *row, char *col);
 char strat_can_play_any_side(char *row, char *col);
@@ -33,34 +34,45 @@ void get_next_move(const char player_id, const char opponent_id, const char diff
     found_strategy = strat_can_win(opponent_id, row, col);
     if (found_strategy) return;
 
-    /* Create a fork (only on difficulty level 3) */
-    if (difficulty > 2) {
-        found_strategy = strat_can_fork(player_id, opponent_id, row, col);
+    /* Create a fork (only on difficulty level 2) */
+    if (difficulty > 1) {
+        found_strategy = strat_can_fork(player_id, opponent_id, row, col, 0);
         if (found_strategy) return;
     }
 
-    /* Block a fork (only on difficulty level 2 or higher) */
-    if (difficulty > 1) {
-        found_strategy = strat_can_fork(opponent_id, player_id, row, col);
+    /* Block a fork (only on difficulty level 3 or higher) */
+    if (difficulty > 2) {
+        found_strategy = strat_can_fork(opponent_id, player_id, row, col, 1);
         if (found_strategy) return;
     }
 
     /* Play opposite corner */
-    found_strategy = strat_can_play_opposite_corner(opponent_id, row, col);
-    if (found_strategy) return;
-
+    if (difficulty > 1) {
+        found_strategy = strat_can_play_opposite_corner(opponent_id, row, col);
+        if (found_strategy) return;
+    }
     /* Play in a corner if it's the first move,
      * otherwise, play in the center if it works*/
     found_strategy = strat_can_play_corner_or_center(row, col);
     if (found_strategy) return;
 
-    /* Play a corner */
-    found_strategy = strat_can_play_any_corner(row, col);
-    if (found_strategy) return;
+    if (difficulty == 1) {
+        /* Play a side */
+        found_strategy = strat_can_play_any_side(row, col);
+        if (found_strategy) return;
 
-    /* Play a side */
-    found_strategy = strat_can_play_any_side(row, col);
-    if (found_strategy) return;
+        /* Play a corner */
+        found_strategy = strat_can_play_any_corner(row, col);
+        if (found_strategy) return;
+    } else {
+        /* Play a corner */
+        found_strategy = strat_can_play_any_corner(row, col);
+        if (found_strategy) return;
+
+        /* Play a side */
+        found_strategy = strat_can_play_any_side(row, col);
+        if (found_strategy) return;
+    }
 }
 
 /* Setup eventual GPIO ports here */
@@ -173,13 +185,15 @@ char _strat_can_win_3(const char pid, const char pos1, const char pos2, const ch
     }
 }
 
-char strat_can_fork(const char pid, const char oid, char *row, char *col) {
+char strat_can_fork(const char pid, const char oid, char *row, char *col, const char invert) {
     int i;
     int j;
 
     char temp_row;
     char temp_col;
     char temp;
+
+    if (invert) { invert_all_moves(); }
 
     char fork_exist = 0;
     for (i = 0; i < 3; i++) {
@@ -194,6 +208,7 @@ char strat_can_fork(const char pid, const char oid, char *row, char *col) {
                 board_set_position(i, j, 0);    // Resets the simulated position
 
                 if (fork_exist) {
+                if (invert) { invert_all_moves(); }
                     *row = i;
                     *col = j;
                     return 1;
@@ -202,7 +217,23 @@ char strat_can_fork(const char pid, const char oid, char *row, char *col) {
         }
     }
 
+    if (invert) { invert_all_moves(); }
+
     return 0;
+}
+
+void invert_all_moves(void) {
+    int i;
+    int j;
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            if (board_get_position(i, j) == 1) {
+                board_set_position(i, j, 2);
+            } else  if (board_get_position(i, j) == 2) {
+                board_set_position(i, j, 1);
+            }
+        }
+    }
 }
 
 char strat_can_play_corner_or_center(char *row, char *col) {

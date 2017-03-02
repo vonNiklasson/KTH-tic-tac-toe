@@ -29,6 +29,14 @@ int main() {
     platform_set_player_led(1, 0);
     platform_set_player_led(2, 0);
 
+    if (platform_get_button_state(0, 0)) {
+        led_test();
+    }
+
+    if (platform_get_button_state(0, 1)) {
+        button_test();
+    }
+
     /* Loop forever to keep the game going */
     while (1) {
         play_game();
