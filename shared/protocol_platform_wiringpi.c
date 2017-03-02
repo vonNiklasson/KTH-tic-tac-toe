@@ -55,20 +55,20 @@ void platform_delay_or_gpio_change(const int milliseconds) {
  * http://pinout.xyz/pinout/
  */
 int INPUT_PIN = 4; // BCM pin 4
-int OUTPUT_PIN = 4; // BCM pin 4
+int OUTPUT_PIN = 17; // BCM pin 17
 
 /* Setup gpio ports here */
 void platform_gpio_setup(void) {
     wiringPiSetupGpio();
+    pinMode(INPUT_PIN, INPUT);
+    pinMode(OUTPUT_PIN, OUTPUT);
 }
 
 /* Define a gpio pre transfer here (will be called before transfer starts)
  * recieve: false=sending data, true=recieving data */
 void platform_gpio_pre_transfer(const bool recieve) {
     if (recieve) {
-        pinMode(INPUT_PIN, INPUT);
     } else {
-        pinMode(OUTPUT_PIN, OUTPUT);
     }
     return;
 }

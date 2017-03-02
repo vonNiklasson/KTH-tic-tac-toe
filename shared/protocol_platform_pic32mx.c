@@ -72,6 +72,12 @@ void platform_delay_or_gpio_change(const int milliseconds) {
 
 /* Setup gpio ports here */
 void platform_gpio_setup(void) {
+    // Recieve on GPIO 13
+    TRISGSET = 0b1000000;
+
+    // Transmit on port A
+    TRISBCLR = 0b1;
+    PORTBCLR = 0b1;
     return;
 }
 
@@ -79,10 +85,13 @@ void platform_gpio_setup(void) {
  * recieve: false=sending data, true=recieving data */
 void platform_gpio_pre_transfer(const bool recieve) {
     if (recieve) {
-        TRISBSET = 0x1;
+        //TRISBSET = 0x1;
+        //TRISGSET = 0b1000000;
     } else {
-        TRISBCLR = 0x1;
-        PORTBCLR = 0x1;
+        //TRISGCLR = 0b1000000;
+        //PORTGCLR = 0b1000000;
+        //TRISBCLR = 0x1;
+        //PORTBCLR = 0x1;
     }
     return;
 }
@@ -93,7 +102,7 @@ void platform_gpio_post_transfer(const bool recieve) {
     if (recieve) {
 
     } else {
-        PORTBCLR = 0x1;
+
     }
     return;
 }
@@ -110,6 +119,7 @@ void platform_gpio_set(const int state) {
 /* Setup procedure on gpio high here */
 void platform_gpio_set_high(void) {
     PORTBSET = 0x1;
+    PORTGSET = 0b1000000;
     return;
 }
 
@@ -122,7 +132,7 @@ void platform_gpio_set_low(void) {
 
 /* Setup procedure on reading the gpio here */
 int platform_gpio_read(void) {
-    return (PORTB & 0x1);
+    return ((PORTG & 0b1000000) >> 6);
 }
 
 

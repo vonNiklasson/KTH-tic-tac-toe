@@ -1,6 +1,7 @@
 #include "../shared/board.c"
 #include "../shared/protocol.c"
 #include "../shared/protocol_platform_pic32mx.c"
+#include "../ai-client/ai.c"
 //#include "platform.c" (Will be included during compile)
 
 void play_game(void);
@@ -202,9 +203,13 @@ void poll_read_valid_move(char *row, char *col) {
 }
 
 void poll_read_ai_move(const char difficulty, char *row, char *col) {
+    /* Current fix when protocol won't work */
+    get_next_move(2, 1, difficulty, row, col);
+    return;
+
     hdp_initialize();
 
-    hdp_bitrate = hdp_get_nearest_bitrate(50);
+    hdp_bitrate = hdp_get_nearest_bitrate(8);
 
     hdp_data_set_byte(hdp_send_data, DATA_BYTES_RESERVED, 0, difficulty);
     hdp_data_set_byte(hdp_send_data, DATA_BYTES_RESERVED, 1, board_moves[0]);
