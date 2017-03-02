@@ -22,6 +22,7 @@ void clear_led_and_mini_sleep(void);
 int main() {
 
     platform_init();
+    platform_set_all_led(0);
 
     /* Loop forever to keep the game going */
     while (1) {
@@ -30,6 +31,7 @@ int main() {
 
 	return 0;
 }
+
 
 void play_game(void) {
 
@@ -61,10 +63,9 @@ void play_game(void) {
 
     while (player_1_score != FINAL_SCORE && player_2_score != FINAL_SCORE) {
         platform_set_all_led(0);
-        player1_start = rounds_played % 2;
+        player1_start = !(rounds_played % 2);
 
         board_result_round = play_round(player1_start, ai);
-        platform_sleep(500);
 
         if (board_result_round != 0) {
             if (board_result_round == 1) {
@@ -80,6 +81,7 @@ void play_game(void) {
         rounds_played++;
         /* Show the score and wait a moment before starting the new match */
         platform_sleep(1000);
+        clear_led_and_mini_sleep();
         print_game_score(player_1_score, player_2_score);
         platform_sleep(1500);
     }
@@ -110,6 +112,7 @@ char play_round(char player1_turn, const char ai) {
         }
         /* Print current state with LEDs */
         print_game_state();
+        platform_sleep(20);
 
         board_moves_count = board_count_moves(0);
         player1_turn = !player1_turn; // Sets player1_turn to 1 or 0 depending on last value
@@ -123,6 +126,8 @@ char play_round(char player1_turn, const char ai) {
 }
 
 char poll_read_player_select(void) {
+    platform_set_all_led(0);
+
     platform_set_led(0, 0, 3);
     platform_set_led(0, 2, 3);
 
@@ -132,6 +137,7 @@ char poll_read_player_select(void) {
 
     /* If 1 player was pressed */
     if (platform_get_button_state(0, 0) == 1) {
+        platform_sleep(10);
         /* Wait for its release and send player state */
         while (platform_get_button_state(0, 0) == 1) {}
         return 1;
@@ -139,6 +145,7 @@ char poll_read_player_select(void) {
 
     /* If 2 player was pressed */
     if (platform_get_button_state(0, 2) == 1) {
+        platform_sleep(10);
         /* Wait for its release and send player state */
         while (platform_get_button_state(0, 2) == 1) {}
         return 2;
@@ -147,6 +154,8 @@ char poll_read_player_select(void) {
 
 
 char poll_read_ai_select(void) {
+    platform_set_all_led(0);
+
     platform_set_led(0, 0, 3);
     platform_set_led(0, 1, 3);
     platform_set_led(0, 2, 3);
@@ -158,6 +167,7 @@ char poll_read_ai_select(void) {
 
     /* If level 1 was pressed */
     if (platform_get_button_state(0, 0) == 1) {
+        platform_sleep(10);
         /* Wait for its release and send level state */
         while (platform_get_button_state(0, 0) == 1) {}
         return 1;
@@ -165,6 +175,7 @@ char poll_read_ai_select(void) {
 
     /* If level 2 was pressed */
     if (platform_get_button_state(0, 1) == 1) {
+        platform_sleep(10);
         /* Wait for its release and send level state */
         while (platform_get_button_state(0, 1) == 1) {}
         return 2;
@@ -172,6 +183,7 @@ char poll_read_ai_select(void) {
 
     /* If level 3 was pressed */
     if (platform_get_button_state(0, 2) == 1) {
+        platform_sleep(10);
         /* Wait for its release and send level state */
         while (platform_get_button_state(0, 2) == 1) {}
         return 3;
@@ -222,18 +234,74 @@ void print_game_state(void) {
 
 /* Prints the current score on row 2-0 on col 0 and 2 */
 void print_game_score(const char p1_score, const char p2_score) {
+    platform_set_all_led(0);
+
     int i;
     for (i = 0; i < p1_score; i++) {
         platform_set_led(2-i, 0, 1);
     }
 
-    int j;
-    for (j = 0; j < p2_score; j++) {
-        platform_set_led(2-j, 2, 2);
+    for (i = 0; i < p2_score; i++) {
+        platform_set_led(2-i, 2, 2);
     }
 }
 
 void clear_led_and_mini_sleep(void) {
     platform_set_all_led(0);
-    platform_sleep(50);
+    platform_sleep(100);
+}
+
+void led_test(void) {
+    int i;
+    int j;
+
+    for(i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            platform_set_led(i, j, 1);
+            platform_sleep(250);
+            //platform_set_led(i, j, 2);
+            //platform_sleep(500);
+        }
+    }
+
+    for(i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            platform_set_led(i, j, 2);
+            platform_sleep(250);
+            //platform_set_led(i, j, 2);
+            //platform_sleep(500);
+        }
+    }
+
+    for(i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            platform_set_led(i, j, 3);
+            platform_sleep(250);
+            //platform_set_led(i, j, 2);
+            //platform_sleep(500);
+        }
+    }
+
+    for(i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            platform_set_led(i, j, 0);
+            platform_sleep(250);
+            //platform_set_led(i, j, 2);
+            //platform_sleep(500);
+        }
+    }
+}
+
+void button_test(void) {
+    int i;
+    int j;
+
+    while (1) {
+
+        for(i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
+                platform_set_led(i, j, platform_get_button_state(i, j));
+            }
+        }
+    }
 }
