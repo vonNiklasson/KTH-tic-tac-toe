@@ -12,7 +12,8 @@ void poll_read_valid_move(char *row, char *col);
 void poll_read_ai_move(const char difficulty, char *row, char *col);
 
 void print_game_state(void);
-void print_game_score(const char p1_score, const char p2_score, const char only_player);
+void print_game_score(const char p1_score, const char p2_score, const char only_player, const char no_reset);
+void print_and_blink_winner_score(const char p1_score, const char p2_score, const char max_score);
 void clear_led_and_mini_sleep(void);
 
 #define FINAL_SCORE 3
@@ -74,7 +75,7 @@ void play_game(void) {
         platform_sleep(1000);
 
         clear_led_and_mini_sleep();
-        print_game_score(player_1_score, player_2_score, 0);
+        print_game_score(player_1_score, player_2_score, 0, 0);
 
         if (board_result_round != 0) {
             if (board_result_round == 1) {
@@ -93,10 +94,15 @@ void play_game(void) {
         if (player_1_score != 0 || player_2_score != 0) {
             platform_sleep(1000);
         }
-        print_game_score(player_1_score, player_2_score, 0);
-        platform_sleep(1500);
+        print_game_score(player_1_score, player_2_score, 0, 0);
+        if (player_1_score != FINAL_SCORE && player_2_score != FINAL_SCORE) {
+            platform_sleep(1500);
+        }
     }
     /* TODO: Do a slight delay and maybe blink some lights to indicate the game is over */
+    print_and_blink_winner_score(player_1_score, player_2_score, FINAL_SCORE);
+    print_game_score(player_1_score, player_2_score, 0, 0);
+    platform_sleep(1000);
 }
 
 char play_round(char player1_turn, const char ai) {
@@ -254,8 +260,10 @@ void print_game_state(void) {
 }
 
 /* Prints the current score on row 2-0 on col 0 and 2 */
-void print_game_score(const char p1_score, const char p2_score, const char only_player) {
-    platform_set_all_led(0);
+void print_game_score(const char p1_score, const char p2_score, const char only_player, const char no_reset) {
+    if (no_reset == 0) {
+        platform_set_all_led(0);
+    }
 
     int i;
     if (only_player == 0 || only_player == 1) {
@@ -268,6 +276,33 @@ void print_game_score(const char p1_score, const char p2_score, const char only_
         for (i = 0; i < p2_score; i++) {
             platform_set_led(2-i, 2, 2);
         }
+    }
+}
+
+void print_and_blink_winner_score(const char p1_score, const char p2_score, const char max_score) {
+    int i = 0;
+    char on;
+    print_game_score(p1_score, p2_score, 0, 0);
+    for (i = 0; i < 8; i++) {
+        on = ((i % 2) == 0);
+
+        platform_set_all_led(0);
+        if (p1_score != max_score) {
+            print_game_score(p1_score, p2_score, 1, 1);
+        }
+        if (p2_score != max_score) {
+            print_game_score(p1_score, p2_score, 2, 1);
+        }
+        if (p1_score == max_score && on) {
+            print_game_score(p1_score, p2_score, 1, 1);
+        }
+        if (p2_score == max_score && on) {
+            print_game_score(p1_score, p2_score, 2, 1); 
+        }
+
+
+
+        platform_sleep(500);
     }
 }
 
