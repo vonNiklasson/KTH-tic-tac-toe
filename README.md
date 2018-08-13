@@ -1,5 +1,7 @@
 # KTH-tic-tac-toe
 
+This repository contains code for a hardware Tic Tac Toe-client with built in AI.
+
 ## Directories
 
 * `ui-client` <br>
